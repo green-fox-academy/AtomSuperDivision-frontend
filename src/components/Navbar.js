@@ -11,6 +11,7 @@ const Navigation = (props) => {
                 <Nav className="mr-auto">
                     <Nav.Link href="/Register">Register</Nav.Link>
                     <Nav.Link href="/Login">Login</Nav.Link>
+                    <Nav.Link href="/Generator">Generator</Nav.Link>
                 </Nav>
         </Navbar>
     )
