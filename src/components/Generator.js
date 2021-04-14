@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Meme } from "./Meme";
 
-const objectToQueryParam = obj => {
+
+const objectToQueryParam = (obj) => {
   const params = Object.entries(obj).map(([key, value]) => `${key}=${value}`);
   return "?" + params.join("&");
 };
@@ -12,17 +13,25 @@ function Generator() {
   const [topText, setTopText] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [meme, setMeme] = useState(null);
+  const [caption, setCaption] = useState(null);
 
   useEffect(() => {
-    fetch("https://api.imgflip.com/get_memes").then(x =>
-      x.json().then(response => setTemplates(response.data.memes))
+    fetch("https://api.imgflip.com/get_memes").then((x) =>
+      x.json().then((response) => setTemplates(response.data.memes))
     );
   }, []);
 
   if (meme) {
+    console.log(meme);
     return (
       <div style={{ textAlign: "center" }}>
+      <form> 
+        <input placeholder="caption"
+         value={caption}
+         onChange={(e) => setCaption(e.target.value)}/>
         <img style={{ width: 200 }} src={meme} alt="custom meme" />
+        <button>Save & Post</button>
+        </form>
       </div>
     );
   }
@@ -31,7 +40,7 @@ function Generator() {
     <div style={{ textAlign: "center" }}>
       {template && (
         <form
-          onSubmit={async e => {
+          onSubmit={async (e) => {
             e.preventDefault();
             // add logic to create meme from api
             const params = {
@@ -39,7 +48,7 @@ function Generator() {
               text0: topText,
               text1: bottomText,
               username: process.env.REACT_APP_IMGFLIP_USERNAME,
-              password: process.env.REACT_APP_IMGFLIP_PASSWORD
+              password: process.env.REACT_APP_IMGFLIP_PASSWORD,
             };
             const response = await fetch(
               `https://api.imgflip.com/caption_image${objectToQueryParam(
@@ -54,22 +63,27 @@ function Generator() {
           <input
             placeholder="top text"
             value={topText}
-            onChange={e => setTopText(e.target.value)}
+            onChange={(e) => setTopText(e.target.value)}
           />
           <input
             placeholder="bottom text"
             value={bottomText}
-            onChange={e => setBottomText(e.target.value)}
+            onChange={(e) => setBottomText(e.target.value)}
           />
-          <button type="submit">create meme</button>
+          <button
+            type="submit"
+          >
+            create meme
+          </button>
         </form>
       )}
       {!template && (
         <>
           <h1>Pick a template</h1>
-          {templates.map(template => {
+          {templates.map((template) => {
             return (
               <Meme
+                key={template.id}
                 template={template}
                 onClick={() => {
                   setTemplate(template);

@@ -1,31 +1,28 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
-
-import UserInput from './UserInput';
-
+import UserInput from "./UserInput";
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showMessage, setShowMessage] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const history = useHistory();
-  
 
-  const submit = async e => {
+  const submit = async (e) => {
     e.preventDefault();
 
-    if (username && password !== '') {
+    if (username && password !== "") {
       try {
         const loginUser = await fetch(
           `${process.env.REACT_APP_BACKENDURL}/login`,
           {
-            method: 'POST',
+            method: "POST",
             body: JSON.stringify({ username, password }),
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
+              Accept: "application/json",
+              "Content-Type": "application/json",
             },
           }
         );
@@ -34,44 +31,40 @@ function Login() {
 
         if (loginUser.status === 200) {
           setToken(response);
-          history.push('/');
+          history.push("/");
         } else {
           setShowMessage(true);
-          setMessage('Username or password incorrect');
-          setUsername('');
-          setPassword('');
+          setMessage("Username or password incorrect");
+          setUsername("");
+          setPassword("");
         }
       } catch (error) {
         console.log(error);
       }
-    } else if(username == null || username === ""){
+    } else if (username == null || username === "") {
       setShowMessage(true);
-      setMessage(
-        'Please Enter Your Username'
-      );
+      setMessage("Please Enter Your Username");
     } else if (password == null || password === "") {
       setShowMessage(true);
-      setMessage(
-        'Please Enter Your  Password'
-      );
+      setMessage("Please Enter Your  Password");
     }
   };
 
   return (
     <form className="loginForm" onSubmit={submit}>
-    <div className="loginFormInput">
-      <UserInput
-        divClass="login-input"
-        labelClass="form-label"
-        inputClass="form-input"
-        title="Username"
-        id="input-username"
-        type="text"
-        value={username}
-        whenChange={e => {
-          setUsername(e.target.value);
-        }}
-      />
+      <div className="loginFormInput">
+        <UserInput
+          divClass="login-input"
+          labelClass="form-label"
+          inputClass="form-input"
+          title="Username"
+          id="input-username"
+          type="text"
+          value={username}
+          whenChange={(e) => {
+            setUsername(e.target.value);
+          }}
+        />
         <UserInput
           divClass="login-input"
           labelClass="form-label"
@@ -80,7 +73,7 @@ function Login() {
           id="input-password"
           type="password"
           value={password}
-          whenChange={e => setPassword(e.target.value)}
+          whenChange={(e) => setPassword(e.target.value)}
         />
       </div>
       <div className="buttonContainer">
@@ -101,7 +94,7 @@ function Login() {
 
 function setToken(response) {
   console.log(response);
-  localStorage.setItem('X-meme-token', response.token);
+  localStorage.setItem("X-meme-token", response.token);
 }
 
 export default Login;
