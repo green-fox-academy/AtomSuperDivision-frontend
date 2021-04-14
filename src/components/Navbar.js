@@ -4,6 +4,7 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import '../styles/app.css';
 
+
 const Navigation = (props) => {
     console.log(props);
     return (
@@ -12,6 +13,7 @@ const Navigation = (props) => {
                     <Nav.Link href="/Register">Register</Nav.Link>
                     <Nav.Link href="/Login">Login</Nav.Link>
                     <Nav.Link href="/Generator">Generator</Nav.Link>
+                    <Nav.Link href="/Feed">Feed</Nav.Link>
                 </Nav>
         </Navbar>
     )

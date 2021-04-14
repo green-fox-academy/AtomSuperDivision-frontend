@@ -101,7 +101,7 @@ function Login() {
 
 function setToken(response) {
   console.log(response);
-  localStorage.setItem('X-tribes-token', response.jwt);
+  localStorage.setItem('X-meme-token', response.token);
 }
 
 export default Login;
