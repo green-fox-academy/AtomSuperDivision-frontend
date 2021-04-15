@@ -8,6 +8,7 @@ import { FaSurprise } from 'react-icons/fa';
 const baseApi = process.env.REACT_APP_BACKENDURL;
 
 export default class Feed extends React.Component {
+
     state = {
         memes: []
     };
@@ -41,3 +42,7 @@ export default class Feed extends React.Component {
         );
     }
 }
+
+
+
+

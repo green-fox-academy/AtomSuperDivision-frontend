@@ -1,4 +1,4 @@
-import { UPDATE_USERSTATE, RESET_STORE } from '../constants/actionTypes';
+import { UPDATE_USERSTATE, RESET_STORE } from "../constants/actionTypes";
 
 export function updateUserStateAction(payload) {
   return {
