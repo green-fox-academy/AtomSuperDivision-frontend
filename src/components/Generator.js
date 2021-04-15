@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Meme } from "./Meme";
 
 
+const baseApi = process.env.REACT_APP_BACKENDURL;
+
 const objectToQueryParam = (obj) => {
   const params = Object.entries(obj).map(([key, value]) => `${key}=${value}`);
   return "?" + params.join("&");
 };
+
+
 
 function Generator() {
   const [templates, setTemplates] = useState([]);
@@ -15,6 +19,23 @@ function Generator() {
   const [meme, setMeme] = useState(null);
   const [caption, setCaption] = useState(null);
 
+  
+    
+  const submit = async e => {
+    e.preventDefault();
+    
+      const postMeme = await fetch(
+          `${baseApi}/meme`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ caption, meme }),
+          headers: { 'Content-Type': 'application/json',
+          "X-meme-token" : window.localStorage.getItem("X-meme-token"), },
+        }
+      );
+  }
+  
+  
   useEffect(() => {
     fetch("https://api.imgflip.com/get_memes").then((x) =>
       x.json().then((response) => setTemplates(response.data.memes))
@@ -22,17 +43,20 @@ function Generator() {
   }, []);
 
   if (meme) {
-    console.log(meme);
     return (
-      <div style={{ textAlign: "center" }}>
-      <form> 
+      <form onSubmit={submit}>         
+       
         <input placeholder="caption"
+        type="text"
+         name="caption"
          value={caption}
-         onChange={(e) => setCaption(e.target.value)}/>
+         onChange={e => setCaption(e.target.value)}
+        />
         <img style={{ width: 200 }} src={meme} alt="custom meme" />
-        <button>Save & Post</button>
-        </form>
-      </div>
+        <input name="file" value={meme}></input> 
+        <button  type="submit">Save & Post</button>
+      </form>
+    
     );
   }
 
