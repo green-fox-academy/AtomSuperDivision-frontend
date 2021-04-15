@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Meme } from "./Meme";
-
-
+import axios from "axios";
 const baseApi = process.env.REACT_APP_BACKENDURL;
 
 const objectToQueryParam = (obj) => {
@@ -9,54 +8,51 @@ const objectToQueryParam = (obj) => {
   return "?" + params.join("&");
 };
 
-
-
-function Generator() {
+function App() {
   const [templates, setTemplates] = useState([]);
   const [template, setTemplate] = useState(null);
   const [topText, setTopText] = useState("");
   const [bottomText, setBottomText] = useState("");
   const [meme, setMeme] = useState(null);
-  const [caption, setCaption] = useState(null);
+  const [caption, setCaption] = useState("");
+  let data = new FormData();
 
-  
-    
-  const submit = async e => {
-    e.preventDefault();
-    
-      const postMeme = await fetch(
-          `${baseApi}/meme`,
-        {
-          method: 'POST',
-          body: JSON.stringify({ caption, meme }),
-          headers: { 'Content-Type': 'application/json',
-          "X-meme-token" : window.localStorage.getItem("X-meme-token"), },
-        }
-      );
-  }
-  
-  
   useEffect(() => {
     fetch("https://api.imgflip.com/get_memes").then((x) =>
       x.json().then((response) => setTemplates(response.data.memes))
     );
   }, []);
 
+  const submit = async (e) => {
+    e.preventDefault();
+        axios.post(`${baseApi}/meme`, data,{
+      headers: {
+        "X-meme-token": window.localStorage.getItem("X-meme-token"),
+      },
+    });
+  
+  };
+
   if (meme) {
-    return (
-      <form onSubmit={submit}>         
-       
-        <input placeholder="caption"
-        type="text"
-         name="caption"
-         value={caption}
-         onChange={e => setCaption(e.target.value)}
-        />
-        <img style={{ width: 200 }} src={meme} alt="custom meme" />
-        <input name="file" value={meme}></input> 
-        <button  type="submit">Save & Post</button>
-      </form>
+    data.append("caption", caption);
+    data.append("file", meme);
     
+
+    return (
+      <div style={{ textAlign: "center" }}>
+        <form onSubmit={submit}>
+          <input
+            placeholder="caption"
+            type="text"
+            name="caption"
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+          />
+          <img style={{ width: 200 }} src={meme} alt="custom meme" />
+          <input value={meme}></input>
+          <button type="submit">Save & Post</button>
+        </form>
+      </div>
     );
   }
 
@@ -80,6 +76,7 @@ function Generator() {
               )}`
             );
             const json = await response.json();
+
             setMeme(json.data.url);
           }}
         >
@@ -94,11 +91,7 @@ function Generator() {
             value={bottomText}
             onChange={(e) => setBottomText(e.target.value)}
           />
-          <button
-            type="submit"
-          >
-            create meme
-          </button>
+          <button type="submit">create meme</button>
         </form>
       )}
       {!template && (
@@ -107,7 +100,6 @@ function Generator() {
           {templates.map((template) => {
             return (
               <Meme
-                key={template.id}
                 template={template}
                 onClick={() => {
                   setTemplate(template);
@@ -121,4 +113,4 @@ function Generator() {
   );
 }
 
-export default Generator;
+export default App;
